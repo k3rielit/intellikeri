@@ -1,0 +1,39 @@
+.navbar .dropdown-menu .fas, .navbar .dropdown-menu .far, .navbar .dropdown-menu .fa, .navbar .dropdown-menu .las, .navbar .dropdown-menu .lar, .navbar .dropdown-menu .la, .navbar .dropdown-menu .ncode {
+    color: var(--bs-primary);
+}
+.ghide {
+    display: none !important;
+}
+.code {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: var(--bs-pink);
+}
+/*.json-key {
+    color: rgb(153,138,255);
+}
+.json-value {
+    color: rgb(93,176,216);
+}
+.json-string {
+    color: rgb(242,139,84);
+}*/
+.json-key {
+    color: var(--bs-info);
+}
+.json-value {
+    color: var(--bs-primary);
+}
+.json-string {
+    color: var(--bs-orange);
+}
+#errorPopup {
+    position: fixed;
+    z-index: 9999;
+    right: 1.5%;
+    top: 7%;
+    max-width: 97%;
+    overflow-wrap: break-word;
+}
+#genassets, #tooltip {
+    display: none;
+}

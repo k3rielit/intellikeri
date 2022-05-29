@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IntelliKeri</title>
+    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <script src="js/data.js"></script>
+    <script src="js/classes.js"></script>
+</head>
+
+<body>
+    <span id="ver" style="display:none">0.9</span>
+
+
+
+
+
+    <!-- ----------- -->
+    <!-- ERROR POPUP -->
+    <!-- ----------- -->
+    <div id="errorPopup" class="alert alert-danger" role="alert" style="display:none;">
+        Hiba
+        <hr>
+        <p id="errorPopupContent" class="mb-0">Valami nem jó.</p>
+    </div>
+
+
+
+
+
+    <!-- ------ -->
+    <!-- NAVBAR -->
+    <!-- ------ -->
+    <nav class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"> <i class="lab la-accessible-icon"></i> IntelliKeri</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+                    <li class="nav-item dropdown ms-2">
+                        <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            <i class="las la-plus"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="ghide dropdown-item" href="#"> Sor <i class="las la-grip-lines"></i> </a></li>
+                            <li><hr class="ghide dropdown-divider"></li>
+                            <table id="addElemList"></table>  <!-- add elems -->
+                            <li><hr class="ghide dropdown-divider"></li>
+                            <li><a class="ghide dropdown-item" href="#"> Gyors generálás <i class="las la-arrow-right"></i> </a></li>
+                            <li><a class="ghide dropdown-item" href="#"> Sablon <i class="las la-arrow-right"></i> </a></li>
+                            <li><a class="ghide dropdown-item" href="#"> Egyéb <i class="las la-arrow-right"></i> </a></li>
+                        </ul>
+                    </li>
+
+                    <li class="ghide nav-item ms-2">
+                        <div class="input-group" role="group">
+                            <label class="input-group-text" for="selectRow"> Sor: </label>
+                            <select class="form-select" id="selectRow">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"> <i class="las la-trash-alt"></i> </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Jelenlegi sor torlése</a></li>
+                                <li><a class="dropdown-item" href="#">Sorok kiválasztása</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="ghide nav-item ms-2">
+                        <button class="btn btn-outline-danger"> <i class="las la-trash-alt"></i> </button>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <button id="settingsToggle" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                            data-bs-target="#settingsModal" onclick="Config.refreshUI()"> <i class="las la-cog"></i> </button>
+                    </li>
+
+                </ul>
+                <div class="d-flex">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#downloadModal"> <i class="las la-ellipsis-h"></i> </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="Generator.gen()"> <i class="las la-download"></i> </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+
+    <!-- ------------------------ -->
+    <!-- GENERATOR ROWS / COLUMNS -->
+    <!-- ------------------------ -->
+    <div id="gencontainer" class="container-fluid mt-3">
+        <div class="genrow row align-items-center">
+            <!-- And so it begins... -->
+        </div>
+    </div>
+
+
+
+
+
+
+    <div id="genassets" class="container-fluid mt-3">
+        <div class="genrow row align-items-center">
+
+                <!-- string -->
+                <div class="card border-0" gentype="string">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">String</span> <a type="button" onclick="Utils.showTooltipModal('string')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="string_IncrementType">
+                                <option value="static" selected>statikus</option>
+                                <option value="increment">novekvo</option>
+                            </select>
+                            <input id="string_Input" type="text" class="form-control" placeholder="bármilyen string">
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">String</div>
+                            Statikus, vagy novekvo szoveg. Ideális elválasztásokra, pre- és postfixekre, vagy akár egy alternatív string ID-nak.
+                            <ul>
+                                <li><b>statikus</b>: Minden sorban ugyanaz fog maradni a string.</li>
+                                <li><b>novekvo</b>: Soronként no az értéke a string választék alapján.</li>
+                            </ul>
+                            <i style="font-size: 0.8rem;">Ha olyan karakter lesz noveléskor, ami nincs benne a string választékban, akkor azt utolsó elemnek tekinti és helyiértéket vált.</i>
+                    </div>
+                </div>
+                <!-- num -->
+                <div class="card border-0" gentype="num">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Szám</span> <a type="button" onclick="Utils.showTooltipModal('num')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="num_IncrementType">
+                                <option value="static" selected>statikus</option>
+                                <option value="increment">novekvo</option>
+                                <option value="decrement">csokkeno</option>
+                            </select>
+                            <input id="num_Input" type="number" class="form-control" value="0" min="-9007199254740991" max="9007199254740991">
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Szám</div>
+                        A JavaScript <code>number</code> biztonságos tartományából (+/-<code>9007199254740991</code>) szabadon választható szám.
+                        <ul>
+                            <li><b>statikus</b>: Minden sorban ugyanaz fog maradni a szám.</li>
+                            <li><b>novekvo</b>: Soronként no az értéke a 1-el.</li>
+                            <li><b>csokkeno</b>: Soronként csokken az értéke a 1-el.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- hex -->
+                <div class="card border-0" gentype="hex">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">HEX</span> <a type="button" onclick="Utils.showTooltipModal('hex')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="hex_IncrementType">
+                                <option value="static" selected>statikus</option>
+                                <option value="increment">novekvo</option>
+                                <option value="decrement">csokkeno</option>
+                            </select>
+                            <input id="hex_Input" type="number" class="form-control text-end" value="0" min="0" onchange="Utils.nextSibling(this,2).value = parseInt(this.value).toString(16)" onkeydown="Utils.nextSibling(this,2).value = parseInt(this.value).toString(16)">
+                            <span class="input-group-text"><i class="las la-random"></i></span>
+                            <input id="hex_Output" type="text" class="form-control bg-light" value="0" readonly>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">HEX</div>
+                        Statikus, novekvo, vagy csokkeno szám, ami automatikusan átalakul HEX-re.
+                        <ul>
+                            <li><b>statikus</b>: Minden sorban ugyanaz fog maradni.</li>
+                            <li><b>novekvo</b>: Soronként no az értéke a számnak, így a HEX-nek is.</li>
+                            <li><b>csokkeno</b>: Ugyanaz csak visszafelé.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- rString -->
+                <div class="card border-0" gentype="rString">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random string</span> <a type="button" onclick="Utils.showTooltipModal('rString')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <button class="btn btn-outline-secondary" onclick="document.getElementById('settingsToggle').click()"> <i class="las la-cog"></i> </button>
+                            <select class="form-select" id="rString_Type">
+                                <option value="stringPool">String választék</option>
+                                <option value="hu">Magyar betuk</option>
+                                <option value="en">Angol betuk</option>
+                            </select>
+                            <span class="input-group-text">Hossz:</i></span>
+                            <input id="rString_Length" type="number" class="form-control" value="5" min="0"max="2147483647" >
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random string</div>
+                        Random karaktereket tartalmazó, választható hosszúságú szoveg.<br>
+                        A string választék a <b>Beállításokban</b> szerkesztheto.
+                        <ul>
+                            <li><b>String választék:</b> A string választék random karaktereibol épul majd fel a string. A karakterszáma ugyanaz lesz mint a megadott.
+                            <li><b>Magyar betuk:</b> A magyar ABC betuibol épul fel. Az eredmény karakterszáma lehet hogy tobb lesz, mint a megadott (cs, dz, dzs, ...).
+                            <li><b>Angol betuk:</b> Az angol ABC betuibol alkot egy stringet. A végso karakterszám egyenlo lesz a megadottal.
+                        </ul>
+                    </div>
+                </div>
+                <!-- rChar -->
+                <div class="card border-0" gentype="rChar">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random char</span> <a type="button" onclick="Utils.showTooltipModal('rChar')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <button class="btn btn-outline-secondary" onclick="document.getElementById('settingsToggle').click()"> <i class="las la-cog"></i> </button>
+                            <select class="form-select" id="rChar_Type">
+                                <option value="stringPool">String választék</option>
+                                <option value="hu">Magyar betu</option>
+                                <option value="en" selected>Angol betu</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random char</div>
+                        Egy random karakter, választható karakterekbol.<br>
+                        A string választék a <b>Beállításokban</b> szerkesztheto.
+                        <ul>
+                            <li><b>String választék:</b> A string választék egy random karaktere. Fixen 1 karakter hosszú.
+                            <li><b>Magyar betu:</b> A magyar ABC betuibol egy. Az eredmény karakterszáma lehet hogy tobb lesz, mint 1 (cs, dz, dzs, ...).
+                            <li><b>Angol betu:</b> Az angol ABC betuibol egy. A karakterszám fixen 1.
+                        </ul>
+                    </div>
+                </div>
+                <!-- rNum -->
+                <div class="card border-0" gentype="rNum">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random szám</span> <a type="button" onclick="Utils.showTooltipModal('rNum')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <input id="rNum_MinValue" type="number" class="form-control text-end" value="0" > <!-- min="-9007199254740991" max="9007199254740991" -->
+                            <span class="input-group-text"> <i class="las la-less-than-equal"></i> <code class="mx-2">X</code> <i class="las la-less-than"></i> </span>
+                            <input id="rNum_MaxValue" type="number" class="form-control" value="5" min="-9007199254740991" max="9007199254740991">
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random szám</div>
+                        A JavaScript <code>number</code> biztonságos tartományából (+/-<code>9007199254740991</code>), (de hála a number inputnak, begépelve nem érvényesek a minimum és maximum értékek) egy random szám. A tartomány szukitheto.
+                    </div>
+                </div>
+                <!-- rArrayItem -->
+                <div class="card border-0" gentype="rArrayItem">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random tomb elem</span> <a type="button" onclick="Utils.showTooltipModal('rArrayItem')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <input id="rArrayItem_Input" type="text" class="form-control" placeholder='[ "string", 1234, true, "string2" ]'>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random tomb elem</div>
+                        Szovegként beírható egy JSON tomb, ami JSON adattípusokat (<span class="code">string, number, object, array, boolean, null</span>) kell tartalmazzon.<br>
+                        <div class="fw-bold">Példa</div>
+                        <div class="codeblock border bg-light p-1">
+                            <span id="json-ex1"></span>
+                        </div>
+                        vagy
+                        <div class="codeblock border bg-light p-1">
+                            <span id="json-ex2"></span>
+                        </div>
+                        <div class="fw-bold">Eredmény</div>
+                        Az elemek kozul random valamelyik.
+                    </div>
+                </div>
+                <!-- rName -->
+                <div class="card border-0" gentype="rName">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random név</span> <a type="button" onclick="Utils.showTooltipModal('rName')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="rName_Language">
+                                <option value="hu" selected>Magyar</option>
+                                <option value="en">Angol</option>
+                            </select>
+                            <input type="text" class="form-control text-end" id="rName_Separator" placeholder="Elválasztó">
+                            <span class="input-group-text">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rName_HasLastName" checked>
+                                    <label class="form-check-label" for="rName_HasLastName">Vezetéknév</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rName_HasFirstName" checked>
+                                    <label class="form-check-label" for="rName_HasFirstName">Keresztnév</label>
+                                </div>
+                            </span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random név</div>
+                        Egy random magyar, vagy angol név <code>Vezetéknév Keresztnév</code>, <code>Vezetéknév</code>, vagy <code>Keresztnév</code> formában.<br>
+                        Az elválasztó alaphelyzetben (uresen hagyva) szókoz.
+                    </div>
+                </div>
+                <!-- rPhoneNum -->
+                <div class="card border-0" gentype="rPhoneNum">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random telefonszám</span> <a type="button" onclick="Utils.showTooltipModal('rPhoneNum')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="rPhoneNum_Country">
+                                <option value="hu" selected>Magyarország</option>
+                                <option value="uk">Egyesult Királyság</option>
+                                <option value="us">Amerika</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random telefonszám</div>
+                        Egy random telefonszám <code>+[ország hívószám][számok]</code> formában.
+                        <ul>
+                            <li><b>hu</b>: <code>+36XXXXXXXXX</code></li>
+                            <li><b>uk</b>: <code>+447911XXXXXX</code></li>
+                            <li><b>us</b>: <code>+1NXXNXXXXXX</code></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- rEmail -->
+                <div class="card border-0" gentype="rEmail">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random email</span> <a type="button" onclick="Utils.showTooltipModal('rEmail')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="rEmail_Language">
+                                <option value="hu" selected>Magyar</option>
+                                <option value="en">Angol</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random email</div>
+                        Egy random email cím <code>name@domain</code> formában, választható nyelven, amitol a vezeték- és keresztnév sorrendje fog benne változni.<br>
+                        <ul>
+                            <li><b>name</b>: Tobb formát is felvehet, tartalmazhat vezeték- és/vagy keresztnevet, illetve évet.</li>
+                            <li><b>domain</b>: Egy rovid, létezo email domain-ekbol álló listából egy random domain. Kulon lista van minden nyelvhez.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- rDateTime -->
+                <div class="card border-0" gentype="rDateTime">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random DateTime</span> <a type="button" onclick="Utils.showTooltipModal('rDateTime')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="rDateTime_Locale">
+                                <option value="hu-HU" selected>hu-HU</option>
+                                <option value="en-US">en-US</option>
+                                <option value="en-UK">en-UK</option>
+                                <option value="ja-JP">ja-JP</option>
+                            </select>
+                            <span class="input-group-text">
+                                <input type="datetime-local" id="rDateTime_Start" value="2001-01-01T11:11"> 
+                            </span>
+                            <span class="input-group-text">
+                                <i class="las la-less-than-equal"></i> <code class="mx-2">X</code> <i class="las la-less-than"></i>
+                            </span>
+                            <span class="input-group-text">
+                                <input type="datetime-local" id="rDateTime_End" value="2022-01-30T16:17">
+                            </span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random DateTime</div>
+                        Választható tartományból egy random, magyar DateTime <code>yyyy. MM. dd. HH:mm:ss (év. hónap. nap. óra:perc:másodperc)</code> formában.<br>
+                        Példa eredményre:
+                        <div class="codeblock border bg-light p-1">
+                            2021. 12. 30. 15:18:00
+                        </div>
+                        Példa C# feldolgozásra:
+                        <div class="codeblock border bg-light p-1">
+                            DateTime.Parse("2021. 12. 30. 15:18:03").ToString("yyyy.MM.dd. HH:mm:ss");
+                        </div>
+                    </div>
+                </div>
+                <!-- rColor -->
+                <div class="card border-0" gentype="rColor">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random szín</span> <a type="button" onclick="Utils.showTooltipModal('rColor')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="rColor_Type">
+                                <option value="textHu" selected>Szoveges (magyar)</option>
+                                <option value="textEn">Szoveges (angol)</option>
+                                <option value="hex">HEX</option>
+                                <option value="rgb">RGB</option>
+                            </select>
+                            <input type="text" class="form-control text-end" id="rColor_Separator" placeholder="Elválasztó (RGB-hez, alapból ',')">
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random szín</div>
+                        <ul>
+                            <li><b>Szoveges (magyar)</b>: Egy random magyar szín az osszes ismert szín kozul. Tágyak leírásánál lehet hasznos.</li>
+                            <li><b>Szoveges (angol)</b>: Egy CSS szín, Basic vagy Extended (W3.org).</li>
+                            <li><b>HEX</b>: 6 karakter hosszú hexadecimális szín <code>FFFFFF</code> formában.</li>
+                            <li><b>RGB</b>: RGB szín, <code>255,255,255</code> formában.</li>
+                        </ul>
+                        <i style="font-size: 0.8rem;">Források:
+                            [<a href="http://www.szintan.hu/nev41.htm#leta" target="_blank">szintan.hu</a>] 
+                            [<a href="https://www.w3.org/wiki/CSS/Properties/color/keywords" target="_blank">W3.org</a>]</i> 
+                    </div>
+                </div>
+                <!-- rCountryCapital -->
+                <div class="card border-0" gentype="rCountryCapital">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random ország/fovaros</span> <a type="button" onclick="Utils.showTooltipModal('rCountryCapital')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="rCountryCapital_Language">
+                                <option value="hu" selected>magyar</option>
+                                <option value="en">angol</option>
+                                <option value="local">helyi</option>
+                            </select>
+                            <input type="text" class="form-control text-end" id="rAddress_Separator" placeholder="Elválasztó">
+                            <span class="input-group-text">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCountryCapital_Country" checked>
+                                    <label class="form-check-label" for="rCountryCapital_Country">Ország</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCountryCapital_Capital" checked>
+                                    <label class="form-check-label" for="rCountryCapital_Capital">Fovaros</label>
+                                </div>
+                            </span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random ország/fovaros</div>
+                        Egy random ország és/vagy fováros választható nyelven és elválasztóval.<br>
+                        Az elválasztó alapból szókoz.
+                        <ul>
+                            <li><b>magyar</b>: Az ország/fovaros magyar megnevezése.</li>
+                            <li><b>angol</b>: Angol nyelven.</li>
+                            <li><b>helyi:</b> Az ott használt nyelven.</li>
+                        </ul>
+                        <i style="font-size: 0.8rem;">Magyarország elore megy nem hátra...</i>
+                    </div>
+                </div>
+                <!-- rAddress -->
+                <div class="card border-0" gentype="rAddress">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random lakcím</span> <a type="button" onclick="Utils.showTooltipModal('rAddress')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <input type="text" class="form-control text-end" id="rAddress_Separator" placeholder="Elválasztó">
+                            <span class="input-group-text">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rAddress_Orszag">
+                                    <label class="form-check-label" for="rAddress_Orszag">Ország</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rAddress_Megye">
+                                    <label class="form-check-label" for="rAddress_Megye">Megye</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rAddress_Irsz" checked>
+                                    <label class="form-check-label" for="rAddress_Irsz">Irsz.</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rAddress_Nev" checked>
+                                    <label class="form-check-label" for="rAddress_Nev">Név</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rAddress_Utca" checked>
+                                    <label class="form-check-label" for="rAddress_Utca">Utca</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rAddress_Hazsz" checked>
+                                    <label class="form-check-label" for="rAddress_Hazsz">Házsz.</label>
+                                </div>
+                            </span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random lakcím</div>
+                        Egy random lakcím tetszoleges elemekkel meg elválasztó karakterrel/szoveggel.<br>
+                        Az elválasztó alapból szókoz.<br>
+                        Az ország fixen <code>Magyarország</code>, mivel egyelore más országbeli lakcímet nem tud generálni.<br>
+                        <i style="font-size: 0.8rem;">Magyarország elore megy nem hátra...</i>
+                    </div>
+                </div>
+                <!-- rIp -->
+                <div class="card border-0" gentype="rIp">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random IP</span> <a type="button" onclick="Utils.showTooltipModal('rIp')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <select class="form-select" id="rIp_Type">
+                                <option value="ipv4" selected>IPv4</option>
+                                <option value="ipv6">IPv6</option>
+                                <option value="ipv6dual">IPv6 Dual</option>
+                            </select>
+                            <span class="input-group-text">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rIp_Compress" checked>
+                                    <label class="form-check-label" for="rIp_Compress">IPv6 compress</label>
+                                </div>
+                            </span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random IP</div>
+                        Egy IP cím, választható verzióban, ahol <code>x</code> egy octet-et jelol, és <code>y</code> egy segment-et.<br>
+                        Komplexebb is lehetne a generálás ha valóságban felhasználható IP címekre készult volna, de a cél csak a formátum teljesítése volt.
+                        <ul>
+                            <li><b>IPv4</b>: 4db IPv4 octet <code>x.x.x.x</code> formátumban.</li>
+                            <li><b>IPv6</b>: 8db IPv6 segment <code>y:y:y:y:y:y:y:y</code> formátumban.</li>
+                            <li><b>IPV6 Dual:</b> 6db IPv6 segment, 4db IPv4 octet <code>y:y:y:y:y:y:x.x.x.x</code> formátumban.</li>
+                        </ul>
+                        <i style="font-size: 0.8rem;">Források:
+                            [<a href="https://www.ibm.com/docs/en/ts4500-tape-library?topic=functionality-ipv4-ipv6-address-formats" target="_blank">IBM</a>] 
+                            [<a href="https://hu.wikipedia.org/wiki/IPv6-c%C3%ADm" target="_blank">Wikipedia</a>]</i> 
+                    </div>
+                </div>
+                <!-- rMac -->
+                <div class="card border-0" gentype="rMac">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random MAC cím</span> <a type="button" onclick="Utils.showTooltipModal('rMac')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <input type="text" class="form-control text-end" id="rMac_Separator" placeholder="Elválasztó (alapból semmi)">
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random MAC cím</div>
+                        Egy random 12 karakter hosszú hexadecimális MAC cím.<br>
+                        Az elválasztó (ami 2 karakterenként lenne) alaphelyzetben... semmi.
+                    </div>
+                </div>
+                <!-- rInstitiute -->
+                <div class="card border-0" gentype="rInstitiute">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random intézmény</span> <a type="button" onclick="Utils.showTooltipModal('rInstitiute')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <input type="text" class="form-control text-end" id="rInstitiute_Separator" placeholder="Elválasztó">
+                            <span class="input-group-text">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rInstitiute_Name" checked>
+                                    <label class="form-check-label" for="rInstitiute_Name">Név</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rInstitiute_FullName">
+                                    <label class="form-check-label" for="rInstitiute_FullName">Teljes név (Név + Kód)</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rInstitiute_Code">
+                                    <label class="form-check-label" for="rInstitiute_Code">Kód</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rInstitiute_NormalizedName">
+                                    <label class="form-check-label" for="rInstitiute_NormalizedName">Normalizált név</label>
+                                </div>
+                            </span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random intézmény</div>
+                        Az e-kreta listájából egy random intézmény.<br>
+                        Az elválasztó alaphelyzetben szókoz.
+                        <ul>
+                            <li><b>Név</b>: Az intézmény neve. </li>
+                            <li><b>Teljes név</b>: Az intézmény neve, mellette az intézménykóddal zárójelben. </li>
+                            <li><b>Kód</b> Csak az intézménykód. </li>
+                            <li><b>Normalizált név</b> A teljes név, normalizálva. Valószínuleg nem a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize" target="_blank">String.prototype.normalize()</a>-t értik alatta. </li>
+                        </ul>
+                        <i style="font-size: 0.8rem;">Forrás: 
+                            [<a href="https://intezmenykereso.e-kreta.hu/institutes" target="_blank">e-kreta</a>]
+                        </i>
+                    </div>
+                </div>
+                <!-- rLicensePlate -->
+                <div class="card border-0" gentype="rLicensePlate">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random rendszám</span> <a type="button" onclick="Utils.showTooltipModal('rLicensePlate')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <input type="text" class="form-control text-end" id="rLicensePlate_Separator" placeholder="Elválasztó (alapból semmi)">
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random rendszám</div>
+                        Egy random magyar rendszám, egyedi elválasztóval, ami alapból semmi. (<code>[3 betu][elválasztó][3 szám]</code>)
+                    </div>
+                </div>
+                <!-- rCar -->
+                <div class="card border-0" gentype="rCar">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <span id="elemTitle">Random autó</span> <a type="button" onclick="Utils.showTooltipModal('rCar')"> <i class="las la-question-circle ms-2"></i> </a>
+                            </span>
+                            <input type="text" class="form-control text-end" id="rCar_Separator" placeholder="Elválasztó">
+                            <select class="form-select" id="rCar_Type" style="display: none;">
+                                <option value="metric" selected>metric</option>
+                                <option value="imperial">imperial</option>
+                            </select>
+                            <span class="input-group-text">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Name" checked>
+                                    <label class="form-check-label" for="rCar_Name">Név</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_FuelC">
+                                    <label class="form-check-label" for="rCar_FuelC">Fogyaszt.</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Cylinders">
+                                    <label class="form-check-label" for="rCar_Cylinders">Hengerek</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Displacement">
+                                    <label class="form-check-label" for="rCar_Displacement">L.térfogat</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Horsepower">
+                                    <label class="form-check-label" for="rCar_Horsepower">LE</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Weight">
+                                    <label class="form-check-label" for="rCar_Weight">Súly</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Accel">
+                                    <label class="form-check-label" for="rCar_Accel">Gyors.</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Year" checked>
+                                    <label class="form-check-label" for="rCar_Year">Évj.</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rCar_Origin">
+                                    <label class="form-check-label" for="rCar_Origin">Eredet</label>
+                                </div>
+                            </span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveUp(this)"> <i class="las la-angle-up"></i> </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="Generator.moveDown(this)"> <i class="las la-angle-down"></i> </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="Generator.removeItem(this)"> <i class="las la-trash-alt"></i> </button>
+                        </div>
+                    </div>
+                    <div id="tooltip">
+                        <div class="fw-bold">Random autó</div>
+                        Egy random, létezo autó, választható tulajdonságokkal, és szerkesztheto elválasztással.<br>
+                        Alapból imperial mértékegységekben vannak az adatok, de ez változtatható metrikusra.<br>
+                        Az elválasztó alaphelyzetben (uresen hagyva) <span class="codeblock border bg-light p-1">, </span>.
+                        <ul>
+                            <li><b>Név</b>: Az autó teljes neve, kisbetukkel.</li>
+                            <li><b>Fogyasztás</b>: MPG (Miles Per Gallon, <code>1 MPG = 235.214583 L/100km</code>) formában az autó fogyasztása.</li>
+                            <li><b>Hengerek</b>: A motorban található hengerek száma.</li>
+                            <li><b>Lokettérfogat</b>: A motor lokettérfogata CI (Cubic Inch, <code>1 CI = 16.387064 CC (Cubic Centimeter) / 1000 = L (Liter)</code>).</li>
+                            <li><b>Lóero</b>: A motor teljesítménye lóeroben. (<code>1 LE/HP = 0.745699872 kW</code>)</li>
+                            <li><b>Súly</b>: Az autó súlya, lbs (<code>Pound, 1 lbs = 0.45359237 kg</code>) formában.</li>
+                            <li><b>Gyorsulás</b>: 0-100 km/h-ra való gyorsulás ideje.</li>
+                            <li><b>Évjárat</b>: Az évjárat, <code>év-hónap-nap</code> formában.</li>
+                            <li><b>Eredet</b>: A kontinens ahonnan való az autó.</li>
+                        </ul>
+                        <i style="font-size: 0.8rem;">Forrás: 
+                            [<a href="https://github.com/vega/vega/blob/master/docs/data/cars.json" target="_blank">github.com/vega/vega</a>]
+                        </i>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- -------------- -->
+    <!-- SETTINGS MODAL -->
+    <!-- -------------- -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="settingsModal" tabindex="-1">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Beállítások</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="list-group">
+
+                        <li class="list-group-item">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">String választék:</div>
+                                <div class="input-group">
+                                    <input id="settingsStringPool" type="text" class="form-control" oninput="Config.setStringPool()">
+                                    <button id="restoreStringPool" type="button" class="btn btn-outline-danger" onclick="Config.resetStringPool()"> <i class="las la-undo-alt"></i> </button>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group" role="group">
+                        <button id="restoreSettings" type="button" class="btn btn-outline-danger" onclick="Config.resetConfig()"> <i class="las la-undo-alt"></i> </button>
+                        <button id="closeSettings" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Bezárás</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- ------------- -->
+    <!-- TOOLTIP MODAL -->
+    <!-- ------------- -->
+    <div class="modal fade" id="tooltipModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" id="tooltipModal" tabindex="-1">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Súgó</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="list-group border-0">
+
+                        <!-- tooltiptooltipContainer -->
+                        <li class="list-group-item d-flex justify-content-between align-items-start border-0">
+                            <div id="tooltipContainer" class="ms-2 me-auto">
+                                <!-- automatically insert here -->
+                            </div>
+                        </li>
+
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- -------------- -->
+    <!-- DOWNLOAD MODAL -->
+    <!-- -------------- -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" id="downloadModal" tabindex="-1">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Letoltés</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="container-fluid mt-3">
+                        <div class="row align-items-center">
+                            
+                            <!-- fileName -->
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Fájlnév</span>
+                                        <input type="text" class="form-control" id="fileName" placeholder="Elválasztó" value="source">
+                                        <span class="input-group-text">.</span>
+                                        <input type="text" class="form-control" id="fileExt" placeholder="Elválasztó" value="csv">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- rowOrder -->
+                             <div class="card border-0">
+                                <div class="card-body">
+                                    <div class="input-group">
+                                        <span class="input-group-text">String</span>
+                                        <select class="form-select" id="rowOrder" disabled>
+                                            <option value="1" selected>Random sorrend</option>
+                                            <option value="2">Felváltva</option>
+                                            <option value="3">Egymás után</option>
+                                            <option value="4">Kiválasztott sor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- elemSeparator -->
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Elválasztó</span>
+                                        <input type="text" class="form-control" id="elemSeparator" placeholder="Elválasztó" value=";">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- rowCount -->
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Sorok száma</span>
+                                        <input id="rowCount" type="number" class="form-control text-end" value="100">
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Bezárás</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="Generator.gen()">Letoltés</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- ------- -->
+    <!-- SCRIPTS -->
+    <!-- ------- -->
+    <script src="bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="js/debug.js"></script>
+    <script>
+        Config.loadConfig();
+        document.getElementById('json-ex1').innerHTML = Utils.json.prettyPrint( ['string',1234,true,'string2',false,'string3',20] );
+        document.getElementById('json-ex2').innerHTML = Utils.json.prettyPrint( ['Lajos','Lajos2','Lajos3','Nem Lajos','Lajos rokona'] );
+        Generator.printAddElemList();
+        //Utils.scrollToBottom();
+        //Debug.loadAll();
+    </script>
+</body>
+
+</html>
